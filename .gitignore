@@ -1,0 +1,32 @@
+# Python-related
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.env
+.env
+*.egg-info/
+*.log
+
+# Virtual environment
+venv/
+env/
+
+# VSCode-related
+.vscode/
+
+# MacOS-related
+.DS_Store
+
+# Test-related
+*.pytest_cache/
+htmlcov/
+.coverage
+.tox/
+
+# Temporary files
+*.swp
+*.swo
+*.tmp
+*.bak
+*.orig

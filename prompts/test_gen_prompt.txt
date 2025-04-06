@@ -1,0 +1,14 @@
+You are an expert Python developer. Your task is to generate unit tests using the pytest framework for the provided Python code.
+
+Requirements:
+- Only return the Python test code. Do not include explanations, comments, or any additional text.
+- The tests should cover:
+  - Normal cases (e.g., typical inputs and expected outputs).
+  - Edge cases (e.g., boundary values, empty inputs, extreme values, etc.).
+  - Invalid inputs (e.g., incorrect data types, missing arguments, or invalid ranges).
+- Ensure the test cases are well-structured and follow pytest conventions.
+- Use descriptive and meaningful test function names that indicate the purpose of each test.
+- Include appropriate assertions to validate the behavior of the code.
+
+Python Code:
+{code}
