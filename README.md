@@ -20,8 +20,8 @@ python3 --version
 ```
 ### 2. Clone This Repository
 ```bash
-git clone https://github.com/<your-username>/<your-repository>.git    
-cd <your-repository>
+git clone https://github.com/adi-testing/qa-agent-stack.git    
+cd qa-agent-stack
 ```
 ### 3. Setting Up and Connecting the AI Model
 - Download and install LM Studio from LM Studio's official website.
