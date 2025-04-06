@@ -15,15 +15,15 @@ A lightweight AI agent system that automates software testing. This tool reads y
 
 ### 1. General Setup
 1. Ensure Python 3.8+ is installed on your system. Verify by running:
-    ```bash
+```bash
     python3 --version
-    ```
+```
 
 ### 2. Clone This Repository
-    ```bash
-    git clone https://github.com/<your-username>/<your-repository>.git
+```bash
+    git clone https://github.com/<your-username>/<your-repository>.git    
     cd <your-repository>
-    ```
+```
 
 ### 3. Setting Up and Connecting the AI Model
 1. Download and install LM Studio from LM Studio's official website.
