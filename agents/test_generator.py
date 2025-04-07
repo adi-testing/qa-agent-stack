@@ -81,6 +81,9 @@ def save_file(content, output_path):
         If the content contains Python code blocks (e.g., ```python), only the code
         within the blocks will be saved.
     """
+    # Replace placeholder module name with the correct module path
+    content = content.replace("from your_module", "from src.calculator")
+
     # Extract the Python code block from the content
     start = content.find("```python")
     end = content.rfind("```")
@@ -100,7 +103,7 @@ def main():
         # Paths to the source code and prompt template
         code_path = 'src/calculator.py'
         prompt_path = 'prompts/test_gen_prompt.txt'
-        output_path = 'tests/generated_tests.py'
+        output_path = 'tests/test_generated_tests.py'
 
         # Read the source code and prompt template
         code = read_file(code_path)
