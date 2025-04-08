@@ -1,6 +1,6 @@
 # AI-Driven Automated Software Tester
 
-A lightweight AI agent system that automates software testing. This tool reads your Python code, generates `pytest` unit tests using the LM Studio API, and saves them for execution. It is designed to simplify and accelerate the testing process.
+A lightweight AI agent system that automates unit testing. This tool reads your Python code, generates `pytest` unit tests using the LM Studio API, and saves them for execution. It is designed to simplify and accelerate the testing process.
 
 ---
 
@@ -9,6 +9,10 @@ A lightweight AI agent system that automates software testing. This tool reads y
 - Covers normal cases, edge cases, and invalid inputs.
 - Uses LM Studio API for AI-driven test generation.
 
+## Agent Stack Structure
+- Test Generator Agent: Generate pytest unit tests.
+- Test Runner Agent: Run pytest, collect results (via subprocess or log parsing).
+- Failure Analyzer Agent: Analyze which tests failed and why, and suggest code or test fixes.
 ---
 
 ## Setup Instructions
@@ -18,11 +22,13 @@ Ensure Python 3.8+ is installed on your system. Verify by running:
 ```bash
 python3 --version
 ```
+
 ### 2. Clone This Repository
 ```bash
 git clone https://github.com/adi-testing/qa-agent-stack.git    
 cd qa-agent-stack
 ```
+
 ### 3. Setting Up and Connecting the AI Model
 - Download and install LM Studio from LM Studio's official website.
 - Start the LM Studio server locally.
@@ -47,9 +53,10 @@ On Windows:
 ```bash
 .\venv\Scripts\activate
 ```
+
 ### 5. Running the Project
 Ensure the LM Studio server is running.
-Run the test generator script:
+Run the test generator agent:
 ```bash
 python agents/test_generator.py
 ```
@@ -57,3 +64,20 @@ Generated test cases will be saved in:
 ```bash
 tests/generated_tests.py
 ```
+Run the test runner agent:
+```bash
+python agents/test_runner.py
+```
+Run the failure analyzer agent:
+```bash
+python agents/failure_analyzer.py
+```
+Generated failure analysis report will be saved in:
+```bash
+results/failure_analysis_report.py
+```
+
+### 6. Tech Stack
+- Python
+- Pytest
+- Open Source LLM: I use LM Studio with the Mistral 7B Instruct model
