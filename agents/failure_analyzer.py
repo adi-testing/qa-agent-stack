@@ -1,44 +1,21 @@
-import subprocess
 import requests
-import re
 import os
+import re
 
 PROMPT_PATH = "prompts/failure_analysis_prompt.txt"
-
-def run_tests_and_capture_failures(test_dir="tests"):
-    """
-    Run pytest and return the raw failure messages.
-    """
-    print("▶️ Running pytest...")
-    result = subprocess.run(
-        ["pytest", test_dir, "--tb=short", "--maxfail=5"],
-        capture_output=True,
-        text=True
-    )
-
-    if result.returncode == 0:
-        print("✅ All tests passed!")
-        return None
-
-    output = result.stdout
-    print("❌ Some tests failed. Capturing failure info...")
-    return output
-
-
-def extract_failures(pytest_output):
-    """
-    Extract failing test messages from pytest output.
-    """
-    match = re.search(r"=+ FAILURES =+(.*?)(=+ short test summary info =+)", pytest_output, re.DOTALL)
-    if match:
-        return match.group(1).strip()
-    else:
-        return pytest_output  # fallback
-
+FAILURE_OUTPUT_PATH = "results/failure_output.txt"
+ANALYSIS_REPORT_PATH = "results/failure_analysis_report.txt"  # Path to save the analysis report
 
 def load_prompt(template_path, failures):
     """
     Load and fill the prompt template.
+
+    Args:
+        template_path (str): Path to the prompt template file.
+        failures (str): The failure details to include in the prompt.
+
+    Returns:
+        str: The formatted prompt.
     """
     if not os.path.exists(template_path):
         raise FileNotFoundError(f"Prompt template not found at: {template_path}")
@@ -47,7 +24,6 @@ def load_prompt(template_path, failures):
         template = f.read()
 
     return template.format(failures=failures)
-
 
 def analyze_failures_with_llm(failure_text, api_url="http://127.0.0.1:1234"):
     """
@@ -82,20 +58,55 @@ def analyze_failures_with_llm(failure_text, api_url="http://127.0.0.1:1234"):
         print(response.text)
         return None
 
+def extract_failures_from_file(file_path):
+    """
+    Extract failing test messages from a saved file.
+
+    Args:
+        file_path (str): Path to the file containing pytest output.
+
+    Returns:
+        str: Extracted failure details.
+    """
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"Failure output file not found at: {file_path}")
+
+    with open(file_path, "r") as f:
+        pytest_output = f.read()
+
+    match = re.search(r"=+ FAILURES =+(.*?)(=+ short test summary info =+)", pytest_output, re.DOTALL)
+    if match:
+        return match.group(1).strip()
+    else:
+        return pytest_output  # fallback
+
+def save_analysis_report(content, output_path):
+    """
+    Save the failure analysis report to a file.
+
+    Args:
+        content (str): The content of the analysis report.
+        output_path (str): The path to the output file.
+    """
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)  # Ensure the directory exists
+    with open(output_path, "w") as f:
+        f.write(content)
+    print(f"📄 Failure analysis report saved to: {output_path}")
 
 if __name__ == "__main__":
     # Default API URL for consistency with test_generator.py
     DEFAULT_API_URL = "http://127.0.0.1:1234"
 
-    pytest_output = run_tests_and_capture_failures()
-
-    if pytest_output:
-        failure_details = extract_failures(pytest_output)
+    try:
+        failure_details = extract_failures_from_file(FAILURE_OUTPUT_PATH)
         print("🔍 Extracted Failures:\n", failure_details)
 
         analysis = analyze_failures_with_llm(failure_details, api_url=DEFAULT_API_URL)
         if analysis:
             print("\n🛠️ Suggested Fixes:\n")
             print(analysis)
-    else:
-        print("🎉 No failures to analyze.")
+
+            # Save the analysis report to a file
+            save_analysis_report(analysis, ANALYSIS_REPORT_PATH)
+    except FileNotFoundError as e:
+        print(f"❌ {e}")
