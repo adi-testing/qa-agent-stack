@@ -1,0 +1,13 @@
+You are an expert software tester. Based on the following failure analysis report, generate a concise and structured bug report.
+
+Failure Analysis Report:
+{failure_analysis}
+
+The bug report should include:
+- A summary of the issue.
+- Steps to reproduce the issue.
+- Expected behavior.
+- Actual behavior.
+- Suggested fixes.
+
+Only return the bug report in plain text format.

@@ -2,38 +2,16 @@ import os
 import requests
 
 def read_file(file_path):
-    """
-    Reads the content of a file and returns it as a string.
+    # Reads the content of a file and returns it as a string.
 
-    Args:
-        file_path (str): The path to the file to be read.
-
-    Returns:
-        str: The content of the file.
-
-    Raises:
-        FileNotFoundError: If the file does not exist.
-    """
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"File not found: {file_path}")
     with open(file_path, 'r') as f:
         return f.read()
 
 def generate_tests(code, prompt_template, api_url="http://127.0.0.1:1234"):
-    """
-    Sends a prompt to the LM Studio API to generate test cases.
+    # Sends a prompt to the LM Studio API to generate test cases.
 
-    Args:
-        code (str): The Python code for which test cases are to be generated.
-        prompt_template (str): The prompt template with placeholders for the code.
-        api_url (str): The base URL of the LM Studio API.
-
-    Returns:
-        str: The generated test cases as a string.
-
-    Raises:
-        Exception: If the API request fails or no test cases are generated.
-    """
     # Format the prompt by inserting the code into the template
     prompt = prompt_template.format(code=code)
     print(f"Formatted Prompt Sent to API:\n{prompt}")  # Debugging: Print the full prompt
@@ -70,19 +48,11 @@ def generate_tests(code, prompt_template, api_url="http://127.0.0.1:1234"):
         raise Exception(f"An error occurred: {e}")
 
 def save_file(content, output_path):
-    """
-    Saves the generated test code to a file.
+    # Saves the generated test code to a file.
 
-    Args:
-        content (str): The content to be saved.
-        output_path (str): The path to the output file.
-
-    Notes:
-        If the content contains Python code blocks (e.g., ```python), only the code
-        within the blocks will be saved.
-    """
-    # Replace placeholder module name with the correct module path
-    content = content.replace("from your_module", "from src.calculator")
+    # Replace placeholder module name and any occurrences of 'src.calculator'
+    content = content.replace("from your_module", "from calculator")
+    content = content.replace("from src.calculator", "from calculator")
 
     # Extract the Python code block from the content
     start = content.find("```python")
@@ -90,15 +60,23 @@ def save_file(content, output_path):
     if start != -1 and end != -1:
         content = content[start + len("```python"):end].strip()
 
+    # Prepend the required import statements
+    import_statements = (
+        "import sys\n"
+        "import os\n"
+        "sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))\n\n"
+    )
+    content = import_statements + content
+
     # Ensure the output directory exists
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     with open(output_path, 'w') as f:
         f.write(content)
+    print(f"📄 Test file saved to: {output_path}")
 
 def main():
-    """
-    Main function to orchestrate reading code, generating tests, and saving them.
-    """
+    # Main function to orchestrate reading code, generating tests, and saving them.
+
     try:
         # Paths to the source code and prompt template
         code_path = 'src/calculator.py'
