@@ -1,0 +1,9 @@
+You are an expert QA engineer. Based on the following user story, generate 3 test cases.
+
+User Story:
+{user_story}
+
+Output format:
+- Test Case Title:
+- Steps:
+- Expected Result:

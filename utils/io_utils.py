@@ -1,19 +1,9 @@
 import requests
+import os
 
+# Sends a prompt to the LLM and returns the response.
 def send_prompt_to_llm(prompt, api_url="http://127.0.0.1:1234"):
-    """
-    Sends a prompt to the LLM and returns the response.
-
-    Args:
-        prompt (str): The prompt to send to the LLM.
-        api_url (str): The base URL of the LLM API.
-
-    Returns:
-        str: The response content from the LLM.
-
-    Raises:
-        Exception: If the API request fails or no response is generated.
-    """
+    
     payload = {
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0.8,
@@ -37,3 +27,29 @@ def send_prompt_to_llm(prompt, api_url="http://127.0.0.1:1234"):
         raise Exception("The request timed out. Try increasing the timeout or optimizing the prompt.")
     except Exception as e:
         raise Exception(f"An error occurred: {e}")
+
+# Loads the prompt template from a file.
+def load_prompt_template(template_path):    
+
+    if not os.path.exists(template_path):
+        raise FileNotFoundError(f"Prompt template not found at: {template_path}")
+    
+    with open(template_path, 'r') as f:
+        return f.read()
+
+# Reads the content of a file and returns it as a string.   
+def read_file(file_path):
+   
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"File not found: {file_path}")
+    with open(file_path, 'r') as f:
+        return f.read()
+
+# Save the result to a file.    
+def save_result(content, output_path):
+    
+    # Ensure the directory exists
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)  
+    with open(output_path, "w") as f:
+        f.write(content)
+    print(f"📄 Results saved to: {output_path}")

@@ -1,26 +1,20 @@
 import os
 import re
-from utils.llm_utils import send_prompt_to_llm
+from utils.io_utils import send_prompt_to_llm
+from utils.io_utils import load_prompt_template
+from utils.io_utils import save_result
 
 PROMPT_PATH = "prompts/failure_analysis_prompt.txt"
 FAILURE_OUTPUT_PATH = "results/failure_output.txt"
 ANALYSIS_REPORT_PATH = "results/failure_analysis_report.txt"  # Path to save the analysis report
 
-def load_prompt(template_path, failures):
-    # Load and fill the prompt template.
-
-    if not os.path.exists(template_path):
-        raise FileNotFoundError(f"Prompt template not found at: {template_path}")
-
-    with open(template_path, "r") as f:
-        template = f.read()
-
-    return template.format(failures=failures)
-
 def analyze_failures_with_llm(failure_text, api_url="http://127.0.0.1:1234"):
 
-    # Ask the LLM to explain and suggest fixes for test failures.
-    prompt = load_prompt(PROMPT_PATH, failure_text)
+    # Read the prompt template
+    prompt = load_prompt_template(PROMPT_PATH)
+
+    # Format the prompt with the failure text
+    prompt = prompt.format(failures=failure_text)
 
     # Use shared utility function to send the prompt to the LLM
     try:
@@ -46,33 +40,22 @@ def extract_failures_from_file(file_path):
     else:
         return pytest_output  # fallback
 
-def save_analysis_report(content, output_path):
-    # Save the failure analysis report to a file.
-
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)  # Ensure the directory exists
-    with open(output_path, "w") as f:
-        f.write(content)
-    print(f"📄 Failure analysis report saved to: {output_path}")
-
 def main():
     # Main function to orchestrate the failure analysis process.
     
-    # Default API URL for consistency with test_generator.py
-    DEFAULT_API_URL = "http://127.0.0.1:1234"
-
     try:
         # Extract failure details from the failure output file
         failure_details = extract_failures_from_file(FAILURE_OUTPUT_PATH)
         print("🔍 Extracted Failures:\n", failure_details)
 
         # Analyze the failures using the LLM
-        analysis = analyze_failures_with_llm(failure_details, api_url=DEFAULT_API_URL)
+        analysis = analyze_failures_with_llm(failure_details)
         if analysis:
             print("\n🛠️ Suggested Fixes:\n")
             print(analysis)
 
             # Save the analysis report to a file
-            save_analysis_report(analysis, ANALYSIS_REPORT_PATH)
+            save_result(analysis, ANALYSIS_REPORT_PATH)
     except FileNotFoundError as e:
         print(f"❌ {e}")
 

@@ -1,0 +1,3 @@
+As a registered user,
+I want to reset my password using my email address,
+So that I can regain access to my account if I forget my password.

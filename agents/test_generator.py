@@ -1,16 +1,18 @@
 import os
-from utils.llm_utils import send_prompt_to_llm  
+from utils.io_utils import send_prompt_to_llm  
+from utils.io_utils import load_prompt_template
+from utils.io_utils import read_file
 
-def read_file(file_path):
-    # Reads the content of a file and returns it as a string.
+# Paths to the source code and prompt template
+code_path = 'src/codes/calculator.py'
+prompt_path = 'prompts/test_gen_prompt.txt'
+output_path = 'tests/test_generated_tests.py'
 
-    if not os.path.exists(file_path):
-        raise FileNotFoundError(f"File not found: {file_path}")
-    with open(file_path, 'r') as f:
-        return f.read()
-
-def generate_tests(code, prompt_template, api_url="http://127.0.0.1:1234"):
+def generate_tests(code, api_url="http://127.0.0.1:1234"):
     # Sends a prompt to the LM Studio API to generate test cases.
+
+    # Read the prompt template
+    prompt_template = load_prompt_template(prompt_path)
 
     # Format the prompt by inserting the code into the template
     prompt = prompt_template.format(code=code)
@@ -29,8 +31,8 @@ def save_file(content, output_path):
     # Saves the generated test code to a file.
 
     # Replace placeholder module name and any occurrences of 'src.calculator'
-    content = content.replace("from your_module", "from calculator")
-    content = content.replace("from src.calculator", "from calculator")
+    content = content.replace("from your_module", "from codes.calculator")
+    #content = content.replace("from src.calculator", "from codes.calculator")
 
     # Extract the Python code block from the content
     start = content.find("```python")
@@ -56,17 +58,11 @@ def main():
     # Main function to orchestrate reading code, generating tests, and saving them.
 
     try:
-        # Paths to the source code and prompt template
-        code_path = 'src/calculator.py'
-        prompt_path = 'prompts/test_gen_prompt.txt'
-        output_path = 'tests/test_generated_tests.py'
-
         # Read the source code and prompt template
         code = read_file(code_path)
-        prompt_template = read_file(prompt_path)
-
+      
         # Generate test cases using the LM Studio API
-        test_code = generate_tests(code, prompt_template)
+        test_code = generate_tests(code)
 
         # Save the generated test cases to the output file
         save_file(test_code, output_path)
