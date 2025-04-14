@@ -9,14 +9,20 @@ BUG_REPORT_PATH = "results/bug_report.txt"
 PROMPT_PATH = "prompts/bug_reporter_prompt.txt"
 
 def generate_bug_report_with_llm(failure_analysis, api_url="http://127.0.0.1:1234"):
-    # Generates a bug report using the LLM based on the failure analysis report.
-
+    ''' Generates a bug report using the LLM based on the failure analysis report.
+    Args:
+        failure_analysis (str): The failure analysis report.
+        api_url (str): The URL of the LLM API.
+    Returns:
+        str: The generated bug report.
+    Raises:
+        ValueError: If the bug report generation fails.
+        Exception: If there is an error in the LLM API call.
+    '''
     # Read the prompt template
     prompt_template = load_prompt_template(PROMPT_PATH)
-
     # Format the prompt with the failure analysis report
     prompt = prompt_template.format(failure_analysis=failure_analysis)
-
     # Use the shared utility function to send the prompt to the LLM
     try:
         generated_bug_report = send_prompt_to_llm(prompt, api_url=api_url)
@@ -27,19 +33,16 @@ def generate_bug_report_with_llm(failure_analysis, api_url="http://127.0.0.1:123
         raise Exception(f"An error occurred while generating the bug report: {e}")     
 
 def main():
-    # Main function to read the failure analysis report, generate a bug report, and save it.
-
+    ''' Main function to read the failure analysis report, generate a bug report, and save it.'''
     try:
         # Read the failure analysis report
         failure_analysis = read_file(FAILURE_ANALYSIS_REPORT_PATH)
         print("🔍 Failure Analysis Report:\n", failure_analysis)
-
         # Generate the bug report using the LLM
         bug_report = generate_bug_report_with_llm(failure_analysis)
         if bug_report:
             print("\n🛠️ Generated Bug Report:\n")
             print(bug_report)
-
             # Save the bug report to a file
             save_result(bug_report, BUG_REPORT_PATH)
     except FileNotFoundError as e:

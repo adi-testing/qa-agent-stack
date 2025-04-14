@@ -8,14 +8,19 @@ TEST_CASES_PATH = "results/generated_test_cases.txt"
 PROMPT_PATH = "prompts/test_cases_prompt.txt"
     
 def generate_test_cases(file_path, api_url="http://127.0.0.1:1234"):
-    # Sends a prompt to the LM Studio API to generate test cases.
-
+    ''' Sends a prompt to the LM Studio API to generate test cases.
+    Args:
+        file_path (str): Path to the user stories file.
+        api_url (str): URL of the LM Studio API.
+    Returns:
+        str: The generated test cases.
+    Raises:
+        ValueError: If the generated text is empty or None.
+    '''
     # Read the prompt template
     prompt_template = load_prompt_template(PROMPT_PATH)
-
     # Format the prompt with the user stories
     prompt = prompt_template.format(user_story=file_path)
-
     # Use the shared utility function to send the prompt to the LLM
     try:
         generated_text = send_prompt_to_llm(prompt, api_url=api_url)
@@ -26,21 +31,17 @@ def generate_test_cases(file_path, api_url="http://127.0.0.1:1234"):
         raise Exception(f"An error occurred while generating tests: {e}")
     
 def main():
-       # Generates test cases using the LLM based on user stories.
-
+    ''' Generates test cases using the LLM based on user stories. '''
     DEFAULT_API_URL = "http://127.0.0.1:1234"
-
     try:
         # Read the user stories
         user_stories = read_file(USER_STORIES_PATH)
         print("📜 User Stories:\n", user_stories)
-
         # Generate the test cases using the LLM
         test_cases = generate_test_cases(user_stories, api_url=DEFAULT_API_URL)
         if test_cases:
             print("\n🧪 Generated Test Cases:\n")
             print(test_cases)
-
             # Save the test cases to a file
             save_result(test_cases, TEST_CASES_PATH)
     except FileNotFoundError as e:

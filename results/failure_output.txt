@@ -1,0 +1,22 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.13.2, pytest-7.4.2, pluggy-1.5.0
+rootdir: /Users/adityasanjaya/VSCode/ai_test_stack
+plugins: langsmith-0.3.24, anyio-4.9.0
+collected 6 items
+
+tests/test_generated_tests.py .FF...                                     [100%]
+
+=================================== FAILURES ===================================
+_____________________________ test_add_edge_cases ______________________________
+tests/test_generated_tests.py:14: in test_add_edge_cases
+    assert add(2 ** 31 - 1, 1) == (2 ** 31) - 1
+E   assert 2147483648 == ((2 ** 31) - 1)
+E    +  where 2147483648 = add(((2 ** 31) - 1), 1)
+___________________________ test_add_invalid_inputs ____________________________
+tests/test_generated_tests.py:20: in test_add_invalid_inputs
+    with pytest.raises(TypeError):
+E   Failed: DID NOT RAISE <class 'TypeError'>
+=========================== short test summary info ============================
+FAILED tests/test_generated_tests.py::test_add_edge_cases - assert 2147483648...
+FAILED tests/test_generated_tests.py::test_add_invalid_inputs - Failed: DID N...
+========================= 2 failed, 4 passed in 0.03s ==========================

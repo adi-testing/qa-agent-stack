@@ -1,0 +1,24 @@
+1. Test Case Title: Verify Email Password Reset Functionality for Registered Users - Success Scenario
+   - Steps:
+     a. Login to the application using valid credentials.
+     b. Navigate to the 'Forgot Password' page.
+     c. Enter a registered email address in the provided field and request password reset.
+     d. Check the email inbox for the password reset link.
+     e. Click on the password reset link and set a new password.
+     f. Attempt to log in using the newly created password.
+   - Expected Result: The user is able to successfully reset their password and log in with the new credentials.
+
+2. Test Case Title: Verify Email Password Reset Functionality for Registered Users - Invalid Email Scenario
+   - Steps:
+     a. Login to the application using valid credentials.
+     b. Navigate to the 'Forgot Password' page.
+     c. Enter an invalid email address in the provided field and request password reset.
+     d. Check the email inbox for the password reset link, but it should not be received.
+   - Expected Result: The system displays an error message indicating that the entered email is incorrect or not registered.
+
+3. Test Case Title: Verify Email Password Reset Functionality for Registered Users - Expired Link Scenario
+   - Steps:
+     a. Perform the steps from Test Case 1 and receive the password reset link via email.
+     b. Wait for the link to expire (if there is an expiration time set).
+     c. Click on the expired password reset link.
+   - Expected Result: The user is redirected back to the login page with an error message indicating that the password reset link has expired.

@@ -1,0 +1,23 @@
+The test `test_add_edge_cases` is failing because the `add()` function is not correctly handling overflow for large numbers. In Python, integers can only hold up to 53 bits of data, so when you try to add `2 ** 31 - 1` and `1`, the result exceeds the maximum representable integer value, causing an incorrect result (`2147483648`) which is different from the expected result `(2 ** 31) - 1`.
+
+To fix this issue, you can use a library like `gmpy2` that provides arbitrary-precision arithmetic. Here's an example of how to modify your `add()` function using `gmpy2`:
+
+```python
+from gmpy2 import mpz
+
+def add(a, b):
+    a = mpz(a)
+    b = mpz(b)
+    return a + b
+```
+
+The test `test_add_invalid_inputs` is failing because the `add()` function does not raise a `TypeError` when it receives invalid inputs. To fix this issue, you can modify your `add()` function to check if the inputs are integers and raise a `TypeError` otherwise. Here's an example:
+
+```python
+def add(a, b):
+    if not isinstance(a, int) or not isinstance(b, int):
+        raise TypeError("Both inputs must be integers.")
+    return a + b
+```
+
+After making these changes, you should see the tests passing.
